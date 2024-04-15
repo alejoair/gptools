@@ -38,3 +38,5 @@ This script searches for images using the Pexels API. It is located at /tmp/gpto
 - The script will print the ID, photographer, and URL of each image found.
 ### Example:
 python image_search_via_pexels.py cats 10
+-e 
+Note: The search terms for images and videos must be in English.
