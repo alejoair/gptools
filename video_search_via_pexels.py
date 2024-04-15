@@ -14,6 +14,7 @@ def search_pexels_videos(search_term, per_page):
     if response.status_code == 200:
         videos = response.json().get("videos", [])
         for video in videos:
+            print(f"Duration: {video['duration']} seconds")
             print(f"ID: {video['id']}, Author: {video['user']['name']}, URL: {video['url']}")
             print("Available Resolutions and Links:")
             for file in video['video_files']:
