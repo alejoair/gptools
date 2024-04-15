@@ -12,3 +12,17 @@ This script converts text to speech using AWS Polly. It is located at '/tmp/gpto
 ### Example:
 `python text_to_speech_generator.py en 'Hello world' output.mp3
 
+
+# Image Search via Pexels Script
+This script searches for images using the Pexels API. It is located at /tmp/gptools/image_search_via_pexels.py.
+### Requirements:
+- Pexels API key set as an environment variable (PEXELS_API_KEY).
+- Python packages: requests.
+### Arguments:
+1. Search term (e.g., cats).
+2. Number of results per page.
+### Output:
+- The script will print the ID, photographer, and URL of each image found.
+### Example:
+python image_search_via_pexels.py cats 10
+
