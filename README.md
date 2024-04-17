@@ -40,3 +40,13 @@ This script searches for images using the Pexels API. It is located at /tmp/gpto
 python image_search_via_pexels.py cats 10
 -e 
 Note: The search terms for images and videos must be in English.
+
+# Read Telegram Messages Script
+- **Description**: Reads messages from a Telegram bot.
+- **Requirements**:
+  - Telegram bot token set in the environment variable ().
+  - Python packages: .
+- **Usage**:
+  - 
+- **Output**:
+  - The script prints the conversation ID, the message, the author, and the date of each message received by the bot.
