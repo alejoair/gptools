@@ -37,3 +37,13 @@
   - 
 - **Output**:
   - Prints the conversation ID, the message, the author, and the date of each message received by the bot.
+
+# Send Telegram Message Script
+- **Description**: Sends messages or files to a specified Telegram conversation.
+- **Requirements**:
+  - TELEGRAM_BOT_TOKEN set in the environment variable.
+  - Python packages: python-telegram-bot.
+- **Usage**:
+  - Provide the chat ID and the message or file path to send.
+- **Output**:
+  - Prints the result of the message sent, including the message ID.
