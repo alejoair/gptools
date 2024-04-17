@@ -15,7 +15,7 @@ def generate_voice(language, text, output_filename):
         raise ValueError("Unsupported language.")
 
     # Solicita a Polly que convierta el texto a habla
-    response = polly_client.synthesize_speech(VoiceId='Lupe',
+    response = polly_client.synthesize_speech(VoiceId=voice_id,
                                           Engine='neural',
                                           OutputFormat='mp3', 
                                           Text=text)
