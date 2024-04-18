@@ -112,10 +112,10 @@ sd: https://videos.pexels.com/video-files/2098989/2098989-sd_960_540_30fps.mp4
    - **Path**: 
    - **Description**: Converts text to speech using AWS Polly.
    - **Requirements**:
-     - AWS credentials set up in the environment (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN).
+     - AWS credentials set up in the environment.
      - Python packages: boto3.
    - **Usage**:
-     - 
+     - Audio file saved as /tmp/voice_en.mp3
    - **Output**:
      - Outputs the path to the saved audio file if successful.
 
