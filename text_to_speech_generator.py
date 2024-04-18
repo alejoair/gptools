@@ -5,14 +5,13 @@ def generate_voice(language, text, output_filename):
     # Crea un cliente de Polly
     polly_client = boto3.client('polly', region_name='us-east-1')
 
-
     # Establece el ID del idioma para la voz
-    if language == "es":
-        voice_id = "Penelope"
-    elif language == "en":
-        voice_id = "Joanna"
+    if language == 'es':
+        voice_id = 'Lupe'  # Spanish voice supporting neural engine
+    elif language == 'en':
+        voice_id = 'Matthew'  # English voice supporting neural engine
     else:
-        raise ValueError("Unsupported language.")
+        raise ValueError('Unsupported language.')
 
     # Solicita a Polly que convierta el texto a habla
     response = polly_client.synthesize_speech(VoiceId=voice_id,
@@ -26,11 +25,10 @@ def generate_voice(language, text, output_filename):
             file.write(response['AudioStream'].read())
         print(f"Audio file saved as {output_filename}")
     else:
-        print("Could not stream audio from Polly response.")
+        print('Could not stream audio from Polly response.')
 
 if __name__ == '__main__':
     if len(sys.argv) == 4:
         generate_voice(sys.argv[1], sys.argv[2], sys.argv[3])
     else:
-        print("Usage: python generate_voice.py <language_code> '<message>' <output_file>")
-
+        print('Usage: python generate_voice.py <language_code> '<message>' <output_file>')
