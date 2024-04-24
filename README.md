@@ -23,7 +23,7 @@
    - **Description**: Sends messages to a specified Telegram chat.
    - **Requirements**:
      - TELEGRAM_BOT_TOKEN set as an environment variable.
-     - Python packages: telethon.
+     - Python packages: python-telegram-bot.
    - **Usage**: python send_telegram_message.py <chat_id> <message>
 
 4. **Text to Speech Generator Script**
