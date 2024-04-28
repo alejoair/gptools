@@ -42,3 +42,4 @@
      - Python packages: requests.
    - **Usage**: python video_search_via_pexels.py <search_term> <per_page>
 
+Additional documentation update for clarity.
