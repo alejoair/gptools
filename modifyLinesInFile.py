@@ -1,9 +1,14 @@
 import argparse
 import sys
+import json
 
 def validate_lines_format(lines):
+    if not isinstance(lines, list):
+        print("[ERROR] The input must be a JSON array of strings.")
+        return False
     for line in lines:
-        if not (line.startswith('[') and line.endswith(']')):
+        if not isinstance(line, str):
+            print(f"[ERROR] Each line must be a string. Invalid line: {line}")
             return False
     return True
 
@@ -14,8 +19,7 @@ def insert_lines(file_path, line_start, new_lines):
     line_start = int(line_start) - 1
 
     for i, line in enumerate(new_lines):
-        line_content = line[1:-1]  # Remover los corchetes antes de insertar
-        lines.insert(line_start + i, line_content + '\n')
+        lines.insert(line_start + i, line + '\n')
 
     print_file_with_line_numbers(lines, line_start, len(new_lines), '+')
 
@@ -23,75 +27,102 @@ def insert_lines(file_path, line_start, new_lines):
         file.writelines(lines)
 
 def overwrite_lines(file_path, line_start, line_end, new_lines):
-    print("[DEBUG] Abriendo el archivo:", file_path)
     with open(file_path, 'r') as file:
         lines = file.readlines()
 
-    print("[DEBUG] Número total de líneas en el archivo:", len(lines))
-
     if line_end > len(lines):
-        print(f"[ERROR] El archivo tiene solo {len(lines)} líneas. El rango {line_start}-{line_end} es inválido.")
-        print(f"Para insertar las líneas que faltan, use la función de inserción:")
-        print(f"Ejemplo: python3 modifyLinesInFile.py --operation insert --file_path {file_path} --line_start {len(lines) + 1} --new_lines '[Nueva línea]'")
+        print(f"[ERROR] The file has only {len(lines)} lines. The range {line_start}-{line_end} is invalid.")
         return
 
-    # Eliminar solo los corchetes de las nuevas líneas, preservando tabulaciones y espacios
-    new_lines = [line[1:-1] for line in new_lines]
+    expected_lines = line_end - line_start + 1
+    if len(new_lines) != expected_lines:
+        print(f"[ERROR] Expected {expected_lines} new line(s), but received {len(new_lines)}.")
+        return
 
     for i in range(line_start - 1, line_end):
         line_content = new_lines[i - (line_start - 1)]
-        print(f"[DEBUG] Línea después de remover corchetes: '{line_content}'")
-        
         lines[i] = line_content + '\n'
-        print(f"[DEBUG] Línea sobrescrita en el archivo: '{lines[i].strip()}'")
 
     print_file_with_line_numbers(lines, line_start - 1, len(new_lines), '~')
 
     with open(file_path, 'w') as file:
         file.writelines(lines)
-    print("[DEBUG] Archivo actualizado exitosamente.")
+    print("[INFO] File successfully updated.")
 
+def delete_lines(file_path, line_start, line_end):
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
 
+    deleted_lines = lines[line_start-1:line_end]
+    lines = lines[:line_start-1] + lines[line_end:]
 
+    with open(file_path, 'w') as file:
+        file.writelines(lines)
+
+    print("[INFO] Lines deleted successfully.")
+    print("[INFO] File content after deletion:")
+
+    for i, line in enumerate(lines):
+        line_number = f'{i + 1:05}'
+        print(f'{line_number}> {line}')
+
+    for i, line in enumerate(deleted_lines):
+        line_number = f'{line_start + i:05}'
+        print(f'{line_number}~ {line}')
 
 def print_file_with_line_numbers(lines, start_index, num_lines, symbol):
     for i, line in enumerate(lines):
         line_number = f'{i + 1:05}'
         if start_index <= i < start_index + num_lines:
-            print(f'{line_number}>{symbol} {line.strip()}')
+            print(f'{line_number}>{symbol} {line}')
         else:
-            print(f'{line_number}> {line.strip()}')
+            print(f'{line_number}> {line}')
 
 def main():
-    parser = argparse.ArgumentParser(description='Script para modificar archivos.')
-    parser.add_argument('--operation', type=str, required=True, help='Operación a realizar: insert, delete, overwrite')
-    parser.add_argument('--file_path', type=str, required=True, help='Ruta del archivo a modificar')
-    parser.add_argument('--line_start', type=int, help='Línea inicial para insertar o modificar')
-    parser.add_argument('--line_end', type=int, help='Línea final para modificar')
-    parser.add_argument('--new_lines', type=str, nargs='+', help='Nuevas líneas a insertar o modificar')
+    parser = argparse.ArgumentParser(description='Script to modify files.')
+    parser.add_argument('--operation', type=str, required=True, help='Operation to perform: insert, delete, overwrite')
+    parser.add_argument('--file_path', type=str, required=True, help='Path to the file to be modified')
+    parser.add_argument('--line_start', type=int, help='Starting line for insert or overwrite')
+    parser.add_argument('--line_end', type=int, help='Ending line for overwrite')
+    parser.add_argument('--new_lines', type=str, help='New lines in JSON format to insert or overwrite')
 
     args = parser.parse_args()
 
-    if args.new_lines and not validate_lines_format(args.new_lines):
-        print("[ERROR] Las nuevas líneas deben estar delimitadas por corchetes [ ].")
-        print("Ejemplos de líneas válidas:")
-        print("  [Nueva línea 1]")
-        print("  [Otra línea con texto]")
-        print("  [Texto adicional con espacios]")
+    # Parse the JSON string into a list of lines
+    try:
+        new_lines = json.loads(args.new_lines) if args.new_lines else None
+    except json.JSONDecodeError:
+        print("[ERROR] The new lines must be a valid JSON array.")
+        print("Example of valid input:")
+        print('  python3 script.py --new_lines \'["line 1", "line 2", "line 3"]\'')
+        sys.exit(1)
+
+    if new_lines and not validate_lines_format(new_lines):
+        print("[ERROR] Invalid format detected in new lines.")
+        print("Each line must be a string within a JSON array.")
+        print("Example of valid input:")
+        print('  python3 script.py --new_lines \'["line 1", "line 2", "line 3"]\'')
+        print("Example of valid multi-line input:")
+        print('  python3 script.py --new_lines \'["line 1", "line 2", "print(f\'Hello {name}\')"]\'')
         sys.exit(1)
 
     if args.operation == 'insert':
-        if not args.line_start or not args.new_lines:
-            print("Error: --line_start y --new_lines son obligatorios para la operación insert")
+        if not args.line_start or not new_lines:
+            print("Error: --line_start and --new_lines are required for the insert operation")
             sys.exit(1)
-        insert_lines(args.file_path, args.line_start, args.new_lines)
+        insert_lines(args.file_path, args.line_start, new_lines)
     elif args.operation == 'overwrite':
-        if not args.line_start or not args.line_end or not args.new_lines:
-            print("Error: --line_start, --line_end, y --new_lines son obligatorios para la operación overwrite")
+        if not args.line_start or not args.line_end or not new_lines:
+            print("Error: --line_start, --line_end, and --new_lines are required for the overwrite operation")
             sys.exit(1)
-        overwrite_lines(args.file_path, args.line_start, args.line_end, args.new_lines)
+        overwrite_lines(args.file_path, args.line_start, args.line_end, new_lines)
+    elif args.operation == 'delete':
+        if not args.line_start or not args.line_end:
+            print("Error: --line_start and --line_end are required for the delete operation")
+            sys.exit(1)
+        delete_lines(args.file_path, args.line_start, args.line_end)
     else:
-        print(f"Operación '{args.operation}' no implementada.")
+        print(f"Operation '{args.operation}' not implemented.")
         sys.exit(1)
 
 if __name__ == '__main__':
