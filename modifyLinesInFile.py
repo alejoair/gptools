@@ -1,49 +1,98 @@
+import argparse
 import sys
 
-# Descripción:
-# Este script permite modificar o agregar líneas en un archivo de texto.
-# Recibe cuatro o más argumentos: la ruta del archivo, el número de línea inicial,
-# el número de línea final, y los contenidos que se agregarán o modificarán.
-# No es necesario pasarle los saltos de línea (\n), ya que el script los añade automáticamente.
-# Cada línea debe estar entre comillas y puede contener comillas internas.
+def validate_lines_format(lines):
+    for line in lines:
+        if not (line.startswith('[') and line.endswith(']')):
+            return False
+    return True
 
-if len(sys.argv) < 5:
-    print("[ERROR] Se requieren al menos 4 argumentos: el path del archivo, la línea inicial, la línea final, y el contenido a agregar.")
-    sys.exit(1)
-
-file_path = sys.argv[1]
-line_start = int(sys.argv[2])
-line_end = int(sys.argv[3])
-new_contents = sys.argv[4:]
-
-try:
-    with open(file_path, "r") as file:
+def insert_lines(file_path, line_start, new_lines):
+    with open(file_path, 'r') as file:
         lines = file.readlines()
 
-    # Si el rango supera la cantidad de líneas actuales, agregar líneas vacías.
-    if line_end > len(lines):
-        print("[INFO] El rango de líneas excede el número total de líneas en el archivo.")
-        for i in range(len(lines), line_end):
-            lines.append("\n")
+    line_start = int(line_start) - 1
 
-    # Sobrescribir las líneas en el rango especificado con el contenido pasado.
-    for i in range(line_start - 1, line_end):
-        content_index = i - (line_start - 1)
-        if content_index < len(new_contents):
-            new_content = new_contents[content_index]
-            print(f"[INFO] Modificando/agregando línea {i + 1} con el nuevo contenido.")
-            lines[i] = f"{new_content}\n"
+    for i, line in enumerate(new_lines):
+        line_content = line[1:-1]  # Remover los corchetes antes de insertar
+        lines.insert(line_start + i, line_content + '\n')
 
-    # Limpiar cualquier línea adicional fuera del rango especificado.
-    if len(lines) > line_end:
-        lines = lines[:line_end]
+    print_file_with_line_numbers(lines, line_start, len(new_lines), '+')
 
-    with open(file_path, "w") as file:
+    with open(file_path, 'w') as file:
         file.writelines(lines)
 
-    print("[INFO] Modificaciones completadas.")
+def overwrite_lines(file_path, line_start, line_end, new_lines):
+    print("[DEBUG] Abriendo el archivo:", file_path)
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
 
-except FileNotFoundError:
-    print(f"[ERROR] No se encontró el archivo: {file_path}")
-except Exception as e:
-    print(f"[ERROR] Ocurrió un error al modificar el archivo: {str(e)}")
+    print("[DEBUG] Número total de líneas en el archivo:", len(lines))
+
+    if line_end > len(lines):
+        print(f"[ERROR] El archivo tiene solo {len(lines)} líneas. El rango {line_start}-{line_end} es inválido.")
+        print(f"Para insertar las líneas que faltan, use la función de inserción:")
+        print(f"Ejemplo: python3 modifyLinesInFile.py --operation insert --file_path {file_path} --line_start {len(lines) + 1} --new_lines '[Nueva línea]'")
+        return
+
+    # Eliminar solo los corchetes de las nuevas líneas, preservando tabulaciones y espacios
+    new_lines = [line[1:-1] for line in new_lines]
+
+    for i in range(line_start - 1, line_end):
+        line_content = new_lines[i - (line_start - 1)]
+        print(f"[DEBUG] Línea después de remover corchetes: '{line_content}'")
+        
+        lines[i] = line_content + '\n'
+        print(f"[DEBUG] Línea sobrescrita en el archivo: '{lines[i].strip()}'")
+
+    print_file_with_line_numbers(lines, line_start - 1, len(new_lines), '~')
+
+    with open(file_path, 'w') as file:
+        file.writelines(lines)
+    print("[DEBUG] Archivo actualizado exitosamente.")
+
+
+
+
+def print_file_with_line_numbers(lines, start_index, num_lines, symbol):
+    for i, line in enumerate(lines):
+        line_number = f'{i + 1:05}'
+        if start_index <= i < start_index + num_lines:
+            print(f'{line_number}>{symbol} {line.strip()}')
+        else:
+            print(f'{line_number}> {line.strip()}')
+
+def main():
+    parser = argparse.ArgumentParser(description='Script para modificar archivos.')
+    parser.add_argument('--operation', type=str, required=True, help='Operación a realizar: insert, delete, overwrite')
+    parser.add_argument('--file_path', type=str, required=True, help='Ruta del archivo a modificar')
+    parser.add_argument('--line_start', type=int, help='Línea inicial para insertar o modificar')
+    parser.add_argument('--line_end', type=int, help='Línea final para modificar')
+    parser.add_argument('--new_lines', type=str, nargs='+', help='Nuevas líneas a insertar o modificar')
+
+    args = parser.parse_args()
+
+    if args.new_lines and not validate_lines_format(args.new_lines):
+        print("[ERROR] Las nuevas líneas deben estar delimitadas por corchetes [ ].")
+        print("Ejemplos de líneas válidas:")
+        print("  [Nueva línea 1]")
+        print("  [Otra línea con texto]")
+        print("  [Texto adicional con espacios]")
+        sys.exit(1)
+
+    if args.operation == 'insert':
+        if not args.line_start or not args.new_lines:
+            print("Error: --line_start y --new_lines son obligatorios para la operación insert")
+            sys.exit(1)
+        insert_lines(args.file_path, args.line_start, args.new_lines)
+    elif args.operation == 'overwrite':
+        if not args.line_start or not args.line_end or not args.new_lines:
+            print("Error: --line_start, --line_end, y --new_lines son obligatorios para la operación overwrite")
+            sys.exit(1)
+        overwrite_lines(args.file_path, args.line_start, args.line_end, args.new_lines)
+    else:
+        print(f"Operación '{args.operation}' no implementada.")
+        sys.exit(1)
+
+if __name__ == '__main__':
+    main()
