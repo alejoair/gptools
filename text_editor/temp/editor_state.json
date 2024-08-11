@@ -1,0 +1,7 @@
+{
+    "awaiting_orders": true,
+    "working_file_path": "/tmp/gptools/text_editor/temp/nonexistent_file.txt",
+    "scratch_file_path": "",
+    "pending_function": "open_file",
+    "pending_function_options": []
+}

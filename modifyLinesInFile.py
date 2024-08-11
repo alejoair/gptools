@@ -1,10 +1,9 @@
 import argparse
 import sys
-import json
 
 def validate_lines_format(lines):
     if not isinstance(lines, list):
-        print("[ERROR] The input must be a JSON array of strings.")
+        print("[ERROR] The input must be a list of strings.")
         return False
     for line in lines:
         if not isinstance(line, str):
@@ -84,38 +83,24 @@ def main():
     parser.add_argument('--file_path', type=str, required=True, help='Path to the file to be modified')
     parser.add_argument('--line_start', type=int, help='Starting line for insert or overwrite')
     parser.add_argument('--line_end', type=int, help='Ending line for overwrite')
-    parser.add_argument('--new_lines', type=str, help='New lines in JSON format to insert or overwrite')
+    parser.add_argument('--new_lines', nargs='+', help='New lines to insert or overwrite')
 
     args = parser.parse_args()
 
-    # Parse the JSON string into a list of lines
-    try:
-        new_lines = json.loads(args.new_lines) if args.new_lines else None
-    except json.JSONDecodeError:
-        print("[ERROR] The new lines must be a valid JSON array.")
-        print("Example of valid input:")
-        print('  python3 script.py --new_lines \'["line 1", "line 2", "line 3"]\'')
-        sys.exit(1)
-
-    if new_lines and not validate_lines_format(new_lines):
+    if args.new_lines and not validate_lines_format(args.new_lines):
         print("[ERROR] Invalid format detected in new lines.")
-        print("Each line must be a string within a JSON array.")
-        print("Example of valid input:")
-        print('  python3 script.py --new_lines \'["line 1", "line 2", "line 3"]\'')
-        print("Example of valid multi-line input:")
-        print('  python3 script.py --new_lines \'["line 1", "line 2", "print(f\'Hello {name}\')"]\'')
         sys.exit(1)
 
     if args.operation == 'insert':
-        if not args.line_start or not new_lines:
+        if not args.line_start or not args.new_lines:
             print("Error: --line_start and --new_lines are required for the insert operation")
             sys.exit(1)
-        insert_lines(args.file_path, args.line_start, new_lines)
+        insert_lines(args.file_path, args.line_start, args.new_lines)
     elif args.operation == 'overwrite':
-        if not args.line_start or not args.line_end or not new_lines:
+        if not args.line_start or not args.line_end or not args.new_lines:
             print("Error: --line_start, --line_end, and --new_lines are required for the overwrite operation")
             sys.exit(1)
-        overwrite_lines(args.file_path, args.line_start, args.line_end, new_lines)
+        overwrite_lines(args.file_path, args.line_start, args.line_end, args.new_lines)
     elif args.operation == 'delete':
         if not args.line_start or not args.line_end:
             print("Error: --line_start and --line_end are required for the delete operation")
