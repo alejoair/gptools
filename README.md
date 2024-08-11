@@ -27,6 +27,23 @@ def example_function():
 Using gptools for Complex Scripts
 Here’s a step-by-step guide on how to properly insert complex Python code into a file using gptools:
 
+## Using modifyLinesInFile.py with Delimiters
+This section describes how to use the script with the new delimiters `[line_start]` and `[line_end]` to insert, overwrite, and delete lines in a file.
+### Insert a Line
+To insert a single line at the beginning of a file:
+```bash
+python3 modifyLinesInFile.py --operation insert --file_path /tmp/test_file.py --line_start 1 --new_lines "[line_start]import os[line_end]"
+```
+### Overwrite a Line
+To overwrite an existing line in a file:
+```bash
+python3 modifyLinesInFile.py --operation overwrite --file_path /tmp/test_file.py --line_start 2 --line_end 2 --new_lines "[line_start]import sys[line_end]"
+```
+### Delete a Line
+To delete a specific line from a file:
+```bash
+python3 modifyLinesInFile.py --operation delete --file_path /tmp/test_file.py --line_start 2 --line_end 2
+```
 ## Examples of Using gptools Scripts
 ### Inserting Lines
 1. **Insert a single line at the beginning of the file**:
