@@ -3,53 +3,56 @@ import shutil
 import json
 from tools.clear_editor import clear_editor
 
-RESPONSE_OPTIONS = ["yes", "no"]
+RESPONSE_OPTIONS = ['yes', 'no']
 
-def open_file(file_path):
-    try:
-        with open(file_path, "r") as file:
-            print(f"Archivo {file_path} abierto correctamente. Puedes aplicar operaciones en él.")
-        scratch_file_path = file_path.replace(".txt", "_scratch.txt")
-        shutil.copy(file_path, scratch_file_path)
-        with open("/tmp/gptools/text_editor/temp/editor_state.json", "r+") as state_file:
+def open_file(file_path, state_file_path='/tmp/gptools/text_editor/temp/editor_state.json'):
+    if not file_path:
+        print('No se proporcionó ninguna ruta de archivo.')
+        return
+
+    if not os.path.exists(file_path):
+        print(f'El archivo {file_path} no existe. ¿Deseas crearlo? (yes, no)')
+        with open(state_file_path, 'r+') as state_file:
             state = json.load(state_file)
-            state["working_file_path"] = file_path
-            state["scratch_file_path"] = scratch_file_path
-            state["awaiting_orders"] = False
-            state["pending_function"] = ""
-            state["pending_function_options"] = []
+            state['awaiting_orders'] = True
+            state['pending_function'] = 'open_file'
+            state['pending_function_options'] = RESPONSE_OPTIONS
+            state['working_file_path'] = file_path
+            state['scratch_file_path'] = ''  # No se define hasta que el archivo se cree
             state_file.seek(0)
             json.dump(state, state_file, indent=4)
             state_file.truncate()
-        print(f"Se ha creado un archivo de scratch en {scratch_file_path}.")
-    except FileNotFoundError:
-        print(f"El archivo {file_path} no fue encontrado. ¿Deseas crearlo? (" + ", ".join(RESPONSE_OPTIONS) + ")")
-        print(f"Forma correcta de responder: text_editor.py --response " + " ".join(RESPONSE_OPTIONS))
-        with open("/tmp/gptools/text_editor/temp/editor_state.json", "r+") as state_file:
-            state = json.load(state_file)
-            state["awaiting_orders"] = True
-            state["pending_function"] = "open_file"
-            state["pending_function_options"] = RESPONSE_OPTIONS
-            state["working_file_path"] = file_path
-            state_file.seek(0)
-            json.dump(state, state_file, indent=4)
-            state_file.truncate()
-    except Exception as e:
-        print(f"Error al abrir el archivo: {e}")
+        return
 
-def handle_response(response):
-    state_file_path = "/tmp/gptools/text_editor/temp/editor_state.json"
-    with open(state_file_path, "r") as state_file:
+    # Crear el archivo de scratch agregando '_scratch' antes de la extensión
+    base_name, extension = os.path.splitext(file_path)
+    scratch_file_path = f"{base_name}_scratch{extension}"
+    shutil.copy(file_path, scratch_file_path)
+
+    # Actualizar el estado del editor
+    with open(state_file_path, 'r+') as state_file:
         state = json.load(state_file)
-        file_path = state["working_file_path"]
-        
-        if response.lower() in ["s", "yes"]:
-            with open(file_path, "w") as file:
-                file.write("")  # Crear un archivo vacío
-            print(f"Archivo {file_path} creado correctamente.")
-            # Llamar a open_file para abrir el archivo recién creado
-            open_file(file_path)
+        state['awaiting_orders'] = False
+        state['working_file_path'] = file_path
+        state['scratch_file_path'] = scratch_file_path
+        state_file.seek(0)
+        json.dump(state, state_file, indent=4)
+        state_file.truncate()
+
+    print(f'Archivo {file_path} abierto con éxito y copiado a {scratch_file_path}.')
+
+def handle_response(response, state_file_path='/tmp/gptools/text_editor/temp/editor_state.json'):
+    if response not in RESPONSE_OPTIONS:
+        print(f'Respuesta inválida: {response}. Operación cancelada.')
+        clear_editor(state_file_path)
+        return
+
+    with open(state_file_path, 'r+') as state_file:
+        state = json.load(state_file)
+        file_path = state['working_file_path']
+        if response == 'yes':
+            open(file_path, 'w').close()  # Crear el archivo vacío
+            open_file(file_path, state_file_path)
         else:
-            print("Operación cancelada por el usuario.")
-            # Llamar a clear_editor para limpiar el estado
-            clear_editor()
+            print('Operación cancelada por el usuario.')
+            clear_editor(state_file_path)

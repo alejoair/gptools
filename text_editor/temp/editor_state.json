@@ -1,7 +1,10 @@
 {
-    "awaiting_orders": true,
-    "working_file_path": "/tmp/gptools/text_editor/temp/nonexistent_file.txt",
-    "scratch_file_path": "",
+    "awaiting_orders": false,
+    "working_file_path": "/tmp/intermediate_insert.py",
+    "scratch_file_path": "/tmp/intermediate_insert_scratch.py",
     "pending_function": "open_file",
-    "pending_function_options": []
+    "pending_function_options": [
+        "yes",
+        "no"
+    ]
 }
