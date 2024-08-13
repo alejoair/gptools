@@ -1,10 +1,8 @@
 {
     "awaiting_orders": false,
-    "working_file_path": "/tmp/intermediate_insert.py",
-    "scratch_file_path": "/tmp/intermediate_insert_scratch.py",
-    "pending_function": "open_file",
-    "pending_function_options": [
-        "yes",
-        "no"
-    ]
+    "working_file_path": "/tmp/test_file.txt",
+    "scratch_file_path": "/tmp/test_file_scratch.txt",
+    "undo_file_path": "/tmp/test_file_undo.txt",
+    "pending_function": "",
+    "pending_function_options": []
 }

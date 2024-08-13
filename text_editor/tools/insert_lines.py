@@ -1,50 +1,35 @@
 import json
 
-def insert_lines(state_file_path='/tmp/gptools/text_editor/temp/editor_state.json', start_line=1, new_lines=None):
-    if start_line is None:
-        print('Error: Debes proporcionar el argumento starting_line_number.')
+def insert_lines(state_file_path="/tmp/gptools/text_editor/temp/editor_state.json", start_line=1, new_lines=[]):
+    if start_line is None or not new_lines:
+        print("Error: Debes proporcionar los argumentos starting_line_number y new_lines.")
         return
 
-    if new_lines is None:
-        new_lines = []
-
-    # Agregar \n al final de cada línea
-    new_lines = [line + '\n' for line in new_lines]
-
-    with open(state_file_path, 'r+') as state_file:
+    with open(state_file_path, "r+") as state_file:
         state = json.load(state_file)
-        scratch_file_path = state.get('scratch_file_path')
+        scratch_file_path = state.get("scratch_file_path")
         if not scratch_file_path:
-            print('No se encontró el archivo de scratch.')
+            print("No se encontró el archivo de scratch.")
+            print("Por favor, asegúrate de haber abierto el archivo correctamente con la operación open_file. Ejemplo: --operation open_file --file_path <ruta_del_archivo>")
             return
 
-        # Leer el archivo de scratch
-        with open(scratch_file_path, 'r') as file:
+        with open(scratch_file_path, "r") as file:
             lines = file.readlines()
 
-        # Manejar el caso donde la posición de inserción excede el número de líneas
         if start_line > len(lines):
-            print(f'Advertencia: La posición de inserción ({start_line}) excede el número de líneas ({len(lines)}). Insertando al final del archivo.')
             start_line = len(lines) + 1
 
-        # Insertar las nuevas líneas en la posición especificada
-        lines[start_line-1:start_line-1] = new_lines
+        for i, new_line in enumerate(new_lines):
+            lines.insert(start_line - 1 + i, new_line + "\n")
 
-        # Escribir los cambios de vuelta en el archivo de scratch
-        with open(scratch_file_path, 'w') as file:
+        with open(scratch_file_path, "w") as file:
             file.writelines(lines)
 
-        print(f'Líneas insertadas en el archivo {scratch_file_path} en la línea {start_line}.')
+        print(f"Líneas insertadas correctamente en {scratch_file_path}.")
 
-        # Mostrar el contenido del archivo de scratch después de la inserción
-        with open(scratch_file_path, 'r') as file:
-            content = file.read()
-            print("Verifica detenidamente que las lineas insertadas no tengan errores de identacion, y los caracteres se hallan escapado correctamente")
-            print(f'Contenido del archivo scratch después de la inserción:\n{content}')
+        print("Advertencia: El contenido del archivo de scratch ahora es el siguiente. Revísalo detenidamente para asegurar que no haya errores:")
+        with open(scratch_file_path, "r") as file:
+            for line in file:
+                print(line, end="")
 
-        # Mensaje de advertencia sobre el guardado de cambios
-        print("\nLos cambios no se han guardado en el archivo original. Para guardar los cambios, ejecute:")
-        print("python3 /tmp/gptools/text_editor/text_editor.py --operation savefile\n")
-
-def handle_response(response):
-    pass
+        print("\nPuedes deshacer estos cambios llamando a text_editor con la operación --operation undo.")
