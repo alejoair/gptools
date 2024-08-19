@@ -3,6 +3,7 @@ import json
 import argparse
 from tools.open_file import open_file
 from tools.clear_editor import clear_editor
+from tools.replace_lines import replace_lines
 from tools.save_file import save_file
 from tools.insert_lines import insert_lines
 from tools.delete_lines import delete_lines
@@ -61,6 +62,11 @@ def main():
         delete_lines(state_file_path="/tmp/gptools/text_editor/temp/editor_state.json", 
                      start_line=args.starting_line_number, 
                      end_line=args.ending_line_number)
+    elif args.operation == "replace_lines":
+        replace_lines(state_file_path="/tmp/gptools/text_editor/temp/editor_state.json",
+                  start_line=args.starting_line_number,
+                  end_line=args.ending_line_number,
+                  new_lines=args.new_lines)
     else:
         print("Operación " + args.operation + " no reconocida.")
         print("Operaciones válidas: open_file, clear_editor, save_file, insert_lines, delete_lines")

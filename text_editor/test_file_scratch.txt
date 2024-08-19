@@ -1,0 +1,4 @@
+-e Línea 1
+Línea Reemplazada 1
+Línea Reemplazada 2
+Línea 4
