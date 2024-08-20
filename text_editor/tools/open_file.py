@@ -18,8 +18,10 @@ def open_file(file_path, state_file_path='/tmp/gptools/text_editor/temp/editor_s
             with open(state_file_path, 'r+') as state_file:
                 try:
                     state = json.load(state_file)
+                    
                 except json.JSONDecodeError:
-                    state = {}
+                    print("no se pudo decodificar el archivo de estado")
+                    return
                 
                 # Actualizar el estado con la información necesaria
                 state['awaiting_orders'] = True
@@ -75,12 +77,13 @@ def handle_response(response, state_file_path='/tmp/gptools/text_editor/temp/edi
     try:
         with open(state_file_path, 'r+') as state_file:
             state = json.load(state_file)
-
+            file_path = state["working_file_path"]
             if response == 'yes':
-                # Crear el archivo y el archivo de scratch
-                open(file_path, 'w').close()
+                # Crear el archivo y luego llamar a la funcion open_file
+                open(file_path, 'w+').close()
                 open_file(state['working_file_path'], state_file_path)
-
+            else:
+                print(f"No se ha creado el archivo {file_path}")
             # Limpiar estado pendiente
             state['awaiting_orders'] = False
             state['pending_function'] = None
