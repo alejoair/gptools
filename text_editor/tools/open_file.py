@@ -44,7 +44,7 @@ def open_file(file_path, state_file_path='/tmp/gptools/text_editor/temp/editor_s
         return
     
     else:  #Si el archivo si existe
-        print(f"Se abrio el archivo {file_path} y su contenido ahora es el siguiente. ahora podras llamar las funciones operation insert_lines, delete_lines, modify_lines y cuando hallas terminado de edtarlo y el archivo se encuentre correcto, llama a --operation save_file, los cambios no se aplicaran hasta que lo hagas")
+        print(f"Se abrio el archivo {file_path} y su contenido ahora es el siguiente. ahora podras llamar las funciones operation insert_lines, delete_lines, modify_lines y cuando hallas terminado de edtarlo y el archivo se encuentre correcto, llama a --operation save_file, los cambios no se guardaran hasta que lo hagas")
         print(f"Contenido de {file_path}: \n\n")
         
         base_name, extension = os.path.splitext(file_path)
