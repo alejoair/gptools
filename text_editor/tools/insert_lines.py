@@ -1,14 +1,19 @@
 import json
 from tools.read_line_numbers import number_lines
 
-def insert_lines(state_file_path="/tmp/gptools/text_editor/temp/editor_state.json", start_line=1, new_lines=[]):
+def insert_lines(state_file_path="/tmp/gptools/text_editor/temp/editor_state.json", start_line=1, new_lines=[], args):
+
     if start_line is None or not new_lines:
-        print("Error: Debes proporcionar los argumentos starting_line_number y new_lines.")
+        print("Error: Debes proporcionar los argumentos starting_line_number y new_lines y file_path")
         return
 
     with open(state_file_path, "r+") as state_file:
         state = json.load(state_file)
+        if state["working_file_path"] != args.file_path:
+            print("El archivo {state['working_file_path']} no se ha guardado, primero debes guardar los cambios con --operation save_file o limpiar el editor con clear_editor antes de trabajar en un archivo nuevo")
+            return
         scratch_file_path = state.get("scratch_file_path")
+        
         if not scratch_file_path:
             print("Error: No se encontró la ruta del archivo scratch.")
             print("Instrucciones:")
