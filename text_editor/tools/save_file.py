@@ -15,7 +15,7 @@ def save_file(state_file_path='/tmp/gptools/text_editor/temp/editor_state.json')
             print('No se encontró información de los archivos de trabajo o scratch.')
             return
 
-        print(f'Deseas guardar los cambios de {scratch_file_path} en {working_file_path}? (yes, no)')
+        print(f'Deseas guardar los cambios de {scratch_file_path} en {working_file_path}? para responder ejecuta "text_editor.py --response [yes, no]"')
         state['awaiting_orders'] = True
         state['pending_function'] = 'save_file'
         state['pending_function_options'] = RESPONSE_OPTIONS
@@ -35,7 +35,8 @@ def handle_response(response):
             print(f'Cambios guardados en {working_file_path}.')
             clear_editor()
         else:
-            print('Operación cancelada por el usuario.')
+            print('No se han guardado los cambios, puedes seguir trabajando sobre el archivo y llamar a --operation save_file cuando estes listo para guardar, si lo que quieres es resetear el editor puedes llamar a --operation clear_editor')
+            
         state['awaiting_orders'] = False
         state['pending_function'] = ''
         state['pending_function_options'] = []
