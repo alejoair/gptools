@@ -1,8 +1,1 @@
-{
-    "awaiting_orders": false,
-    "working_file_path": "/tmp/gptools/text_editor/text_editor.py",
-    "scratch_file_path": "/tmp/gptools/text_editor/text_editor_scratch.py",
-    "undo_file_path": "/tmp/gptools/text_editor/text_editor_undo.py",
-    "pending_function": "",
-    "pending_function_options": []
-}
+{"awaiting_orders": false, "working_file_path": "", "scratch_file_path": "", "undo_file_path": "", "pending_function": "", "pending_function_options": []}
