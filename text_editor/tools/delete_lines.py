@@ -1,7 +1,7 @@
 import json
 from tools.read_line_numbers import number_lines
 
-def delete_lines(state_file_path="/tmp/gptools/text_editor/temp/editor_state.json", start_line=None, end_line=None, args):
+def delete_lines(args, state_file_path="/tmp/gptools/text_editor/temp/editor_state.json", start_line=None, end_line=None):
     if start_line is None or end_line is None:
         print("Error: Debes proporcionar los argumentos starting_line_number y ending_line_number.")
         return
