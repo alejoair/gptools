@@ -1,0 +1,63 @@
+# Instrucciones del Text Editor
+
+Este documento detalla cómo utilizar el `text_editor.py` para abrir, editar y guardar archivos de texto. Se incluyen ejemplos prácticos para cada función disponible, así como una explicación del flujo de trabajo recomendado.
+
+## Flujo de Trabajo Recomendado
+
+1. **Abrir un Archivo**:
+   Utiliza `open_file` para abrir un archivo existente o crear uno nuevo. Esto inicializa el archivo de scratch que se utilizará para las modificaciones.
+
+   ```bash
+   python3 text_editor.py --operation open_file --file_path /ruta/del/archivo.py
+   ```
+
+2. **Realizar Modificaciones**:
+   Usa operaciones como `insert_lines`, `delete_lines`, y `replace_lines` para editar el archivo de scratch.
+
+   ### Ejemplo de Insertar Líneas:
+   Inserta múltiples líneas de código en un archivo existente:
+
+   ```bash
+   python3 text_editor.py --operation insert_lines --starting_line_number 3 --new_lines "import os" "import sys" "" "def main():" "    print(\"Hello, World!\")"
+   ```
+
+   ### Ejemplo de Eliminar Líneas:
+   Elimina un rango de líneas del archivo de scratch:
+
+   ```bash
+   python3 text_editor.py --operation delete_lines --starting_line_number 5 --ending_line_number 7
+   ```
+
+   ### Ejemplo de Reemplazar Líneas:
+   Reemplaza un rango de líneas con nuevas líneas:
+
+   ```bash
+   python3 text_editor.py --operation replace_lines --starting_line_number 2 --ending_line_number 4 --new_lines "def greet():" "    print(\"Greetings!\")"
+   ```
+
+3. **Revisar el Contenido**:
+   Antes de guardar, es importante revisar el contenido del archivo de scratch para asegurarse de que no haya errores de sintaxis. 
+
+   **Nota Importante**: El contenido del archivo de scratch se muestra automáticamente con líneas numeradas cuando se realizan operaciones como `insert_lines`, `delete_lines`, y `replace_lines`.
+
+4. **Guardar Cambios**:
+   Finalmente, guarda los cambios en el archivo original con la operación `save_file`:
+
+   ```bash
+   python3 text_editor.py --operation save_file
+   ```
+
+## Consideraciones sobre el Uso de `--new_lines`
+
+- **Formato Correcto**: El parámetro `--new_lines` debe utilizarse para insertar múltiples líneas de código. Cada línea debe estar entre comillas dobles y separada por espacios.
+- **Ejemplo Correcto**:
+  
+  ```bash
+  python3 text_editor.py --operation insert_lines --starting_line_number 1 --new_lines "import os" "import sys" "" "def main():" "    print(\"Hello, World!\")"
+  ```
+
+- **Error Común**: Evita pasar las líneas como una lista o utilizando comillas simples incorrectamente.
+
+## Mensajes de Error y Ayuda
+
+Si se produce un error durante la ejecución del editor, o si no se reconoce una operación, se mostrará este archivo de ayuda.

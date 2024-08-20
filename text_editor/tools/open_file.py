@@ -3,6 +3,7 @@ import shutil
 import json
 from tools.clear_editor import clear_editor
 
+print('Para guardar los cambios, asegúrate de llamar a la función --operation save_file.')
 RESPONSE_OPTIONS = ['yes', 'no']
 
 def open_file(file_path, state_file_path='/tmp/gptools/text_editor/temp/editor_state.json'):

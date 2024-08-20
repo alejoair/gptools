@@ -1,4 +1,5 @@
 import json
+from tools.read_line_numbers import number_lines
 
 def replace_lines(state_file_path="/tmp/gptools/text_editor/temp/editor_state.json", start_line=1, end_line=None, new_lines=[]):
     if start_line is None or end_line is None or not new_lines:
@@ -16,27 +17,26 @@ def replace_lines(state_file_path="/tmp/gptools/text_editor/temp/editor_state.js
             print("2. Una vez que el archivo esté abierto, podrás realizar la sustitución de líneas.")
             return
 
-        with open(scratch_file_path, "r") as file:
-            lines = file.readlines()
+    with open(scratch_file_path, "r") as file:
+        lines = file.readlines()
 
-        if start_line > len(lines):
-            print("Error: El número de línea inicial es mayor que el número total de líneas en el archivo.")
-            return
+    if start_line > len(lines):
+        print("Error: El número de línea inicial es mayor que el número total de líneas en el archivo.")
+        return
 
-        if end_line > len(lines):
-            end_line = len(lines)
+    if end_line > len(lines):
+        end_line = len(lines)
 
-        # Reemplazar las líneas del rango especificado con las nuevas líneas
-        lines[start_line-1:end_line] = [new_line + "\n" for new_line in new_lines]
+    # Reemplazar las líneas del rango especificado con las nuevas líneas
+    lines[start_line-1:end_line] = [new_line + "\n" for new_line in new_lines]
 
-        with open(scratch_file_path, "w") as file:
-            file.writelines(lines)
+    with open(scratch_file_path, "w") as file:
+        file.writelines(lines)
 
-        print(f"Líneas {start_line} a {end_line} reemplazadas correctamente en {scratch_file_path}.")
+    print(f"Líneas {start_line} a {end_line} reemplazadas correctamente en {scratch_file_path}.")
 
-        print("Advertencia: El contenido del archivo de scratch ahora es el siguiente. Revísalo detenidamente para asegurar que no haya errores:")
-        with open(scratch_file_path, "r") as file:
-            for line in file:
-                print(line, end="")
+    # Mostrar el contenido del archivo de scratch con números de línea
+    print("Advertencia: El contenido del archivo de scratch ahora es el siguiente. Revísalo detenidamente para asegurar que no haya errores:")
+    number_lines(scratch_file_path)
 
-        print("\nPuedes deshacer estos cambios llamando a text_editor con la operación --operation undo.")
+    print("Una vez termines de hacer modificaciones al archivo, asegúrate de llamar a la función --operation save_file. para que los cambios se guarden en el archivo original")

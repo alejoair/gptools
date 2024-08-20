@@ -1,4 +1,4 @@
 -e Línea 1
-Línea 2
-Línea 3
+Línea Sustituta 1
+Línea Sustituta 2
 Línea 4

@@ -67,9 +67,11 @@ def main():
                   start_line=args.starting_line_number,
                   end_line=args.ending_line_number,
                   new_lines=args.new_lines)
-    if args.operation:
+    else:
+    if args.operation is None:
+        print("Error: Ninguna operación fue especificada.") 
+        return
         print("Operación " + args.operation + " no reconocida.")
-if args.operation:
         print("Operaciones válidas: open_file, clear_editor, save_file, insert_lines, delete_lines")
 
 if __name__ == "__main__":

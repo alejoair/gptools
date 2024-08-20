@@ -1,4 +1,5 @@
 import json
+from tools.read_line_numbers import number_lines
 
 def insert_lines(state_file_path="/tmp/gptools/text_editor/temp/editor_state.json", start_line=1, new_lines=[]):
     if start_line is None or not new_lines:
@@ -16,23 +17,23 @@ def insert_lines(state_file_path="/tmp/gptools/text_editor/temp/editor_state.jso
             print("2. Una vez que el archivo esté abierto, podrás realizar la inserción de líneas.")
             return
 
-        with open(scratch_file_path, "r") as file:
-            lines = file.readlines()
+    with open(scratch_file_path, "r") as file:
+        lines = file.readlines()
 
-        if start_line > len(lines):
-            start_line = len(lines) + 1
+    if start_line > len(lines):
+        start_line = len(lines) + 1
 
-        for i, new_line in enumerate(new_lines):
-            lines.insert(start_line - 1 + i, new_line + "\n")
+    for i, new_line in enumerate(new_lines):
+        lines.insert(start_line - 1 + i, new_line + "\n")
 
-        with open(scratch_file_path, "w") as file:
-            file.writelines(lines)
+    with open(scratch_file_path, "w") as file:
+        file.writelines(lines)
 
-        print(f"Líneas insertadas correctamente en {scratch_file_path}.")
+    print(f"Líneas insertadas correctamente en {scratch_file_path}.")
+    print("Para guardar los cambios, asegúrate de llamar a la función --operation save_file.")
 
-        print("Advertencia: El contenido del archivo de scratch ahora es el siguiente. Revísalo detenidamente para asegurar que no haya errores:")
-        with open(scratch_file_path, "r") as file:
-            for line in file:
-                print(line, end="")
+    # Mostrar el contenido del archivo de scratch con números de línea
+    print("Advertencia: El contenido del archivo de scratch ahora es el siguiente. Revísalo detenidamente para asegurar que no haya errores:")
+    number_lines(scratch_file_path)
 
-        print("\nPuedes deshacer estos cambios llamando a text_editor con la operación --operation undo.")
+    print("Puedes deshacer estos cambios llamando a text_editor con la operación --operation undo.")
