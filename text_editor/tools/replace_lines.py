@@ -1,7 +1,7 @@
 import json
 from tools.read_line_numbers import number_lines
 
-def replace_lines(state_file_path="/tmp/gptools/text_editor/temp/editor_state.json", start_line=1, end_line=None, new_lines=[]):
+def replace_lines(state_file_path="/tmp/gptools/text_editor/temp/editor_state.json", start_line=1, end_line=None, new_lines=[], args):
     if start_line is None or end_line is None or not new_lines:
         print("Error: Debes proporcionar los argumentos starting_line_number, ending_line_number, y new_lines.")
         return
@@ -9,6 +9,9 @@ def replace_lines(state_file_path="/tmp/gptools/text_editor/temp/editor_state.js
     with open(state_file_path, "r+") as state_file:
         state = json.load(state_file)
         scratch_file_path = state.get("scratch_file_path")
+        if state["working_file_path"] != args.file_path:
+            print("El archivo {state['working_file_path']} no se ha guardado, primero debes guardar los cambios con --operation save_file o limpiar el editor con clear_editor antes de trabajar en un archivo nuevo")
+            return
         if not scratch_file_path:
             print("Error: No se encontró el archivo de scratch.")
             print("Instrucciones:")
