@@ -30,7 +30,7 @@ def handle_response(state, args):
 def main():
     parser = argparse.ArgumentParser(description="Editor de texto por línea de comandos.")
     parser.add_argument("--file_path", help="Ruta del archivo", required=False)
-    parser.add_argument("--operation", help="Operación a realizar (ej. open_file, clear_editor, save_file, insert_lines, delete_lines)", required=False)
+    parser.add_argument("--operation", help="Operación a realizar (ej. open_file, clear_editor, save_file, insert_lines, delete_lines, replace_lines)", required=False)
     parser.add_argument("--response", help="Respuesta a una función pendiente", required=False)
     parser.add_argument("--starting_line_number", help="Número de línea inicial", type=int, required=False)
     parser.add_argument("--ending_line_number", help="Número de línea final", type=int, required=False)
