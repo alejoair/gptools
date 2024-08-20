@@ -16,8 +16,7 @@ def delete_lines(state_file_path="/tmp/gptools/text_editor/temp/editor_state.jso
             print("   Ejemplo: --operation open_file --file_path <ruta_del_archivo>")
             print("2. Una vez que el archivo esté abierto, podrás realizar la eliminación de líneas.")
             return
-
-         try:
+        try:
             with open(scratch_file_path, "r") as file:
                 lines = file.readlines()
         except FileNotFoundError:
