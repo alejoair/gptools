@@ -70,7 +70,7 @@ def main():
     if args.operation:
         print("Operación " + args.operation + " no reconocida.")
 if args.operation:
-        print("Operaciones válidas: open_file, clear_editor, save_file, insert_lines, delete_lines")
+        print("Operaciones válidas: open_file, clear_editor, save_file, insert_lines, delete_lines, replace_lines")
 
 if __name__ == "__main__":
     main()
