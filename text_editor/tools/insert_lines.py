@@ -1,7 +1,7 @@
 import json
 from tools.read_line_numbers import number_lines
 
-def insert_lines(state_file_path="/tmp/gptools/text_editor/temp/editor_state.json", start_line=1, new_lines=[], args):
+def insert_lines(args, state_file_path="/tmp/gptools/text_editor/temp/editor_state.json", start_line=1, new_lines=[]):
 
     if start_line is None or not new_lines:
         print("Error: Debes proporcionar los argumentos starting_line_number y new_lines y file_path")
