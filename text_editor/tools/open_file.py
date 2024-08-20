@@ -12,15 +12,23 @@ def open_file(file_path, state_file_path='/tmp/gptools/text_editor/temp/editor_s
         return
 
     if not os.path.exists(file_path):
-        print(f'El archivo {file_path} no existe. ¿Deseas crearlo? para responder "text_editor.py --response [yes, no]"')
+        print(f'El archivo {file_path} no existe. ¿Deseas crearlo? Para responder: "text_editor.py --response [yes, no]"')
         try:
+            # Abrir o crear el archivo de estado
             with open(state_file_path, 'r+') as state_file:
-                state = json.load(state_file)
+                try:
+                    state = json.load(state_file)
+                except json.JSONDecodeError:
+                    state = {}
+                
+                # Actualizar el estado con la información necesaria
                 state['awaiting_orders'] = True
                 state['pending_function'] = 'open_file'
                 state['pending_function_options'] = RESPONSE_OPTIONS
                 state['working_file_path'] = file_path
                 state['scratch_file_path'] = ''  # No se define hasta que el archivo se cree
+
+                # Guardar el estado actualizado
                 state_file.seek(0)
                 json.dump(state, state_file, indent=4)
                 state_file.truncate()
@@ -40,29 +48,47 @@ def open_file(file_path, state_file_path='/tmp/gptools/text_editor/temp/editor_s
             print(f"Error al copiar archivos: {str(e)}")
             return
 
-        # Actualizar el estado del editor
+        # Actualizar el estado del editor con las rutas de archivo creadas
         try:
             with open(state_file_path, 'r+') as state_file:
-                state = json.load(state_file)
+                try:
+                    state = json.load(state_file)
+                except json.JSONDecodeError:
+                    state = {}
+
                 state['awaiting_orders'] = False
                 state["undo_file_path"] = undo_file_path
-                state['working_file_path'] = file_path
-                state['scratch_file_path'] = scratch_file_path
+                state["scratch_file_path"] = scratch_file_path
+
+                # Guardar el estado actualizado
                 state_file.seek(0)
                 json.dump(state, state_file, indent=4)
                 state_file.truncate()
         except (IOError, json.JSONDecodeError) as e:
             print(f"Error al manejar el estado del editor: {str(e)}")
 
-        print(f'Archivo {file_path} abierto con éxito, ahora puedes aplicar operaciones como insert_lines, delete_lines, replace_lines y cuando valides que el archivo esta correcto debes llamar a --operation save_file para guardar los cambios')
+def handle_response(response, state_file_path='/tmp/gptools/text_editor/temp/editor_state.json'):
+    if response not in RESPONSE_OPTIONS:
+        print(f'Respuesta inválida: {response}')
+        return
 
-def handle_response(response):
-    if response == "yes":
+    try:
         with open(state_file_path, 'r+') as state_file:
             state = json.load(state_file)
-            filepath = state['working_file_path'] 
-            with open(filepath, "w+") as file:
-                pass
-            open_file()
-    else:
-        clear_editor()
+
+            if response == 'yes':
+                # Crear el archivo y el archivo de scratch
+                open(file_path, 'w').close()
+                open_file(state['working_file_path'], state_file_path)
+
+            # Limpiar estado pendiente
+            state['awaiting_orders'] = False
+            state['pending_function'] = None
+            state['pending_function_options'] = None
+
+            # Guardar el estado actualizado
+            state_file.seek(0)
+            json.dump(state, state_file, indent=4)
+            state_file.truncate()
+    except (IOError, json.JSONDecodeError) as e:
+        print(f"Error al manejar la respuesta: {str(e)}")
