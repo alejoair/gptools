@@ -3,7 +3,6 @@ import json
 
 
 def clear_editor(state_file_path='/tmp/gptools/text_editor/temp/editor_state.json'):
-    print('Para guardar los cambios, asegúrate de llamar a la función --operation save_file.')
     with open(state_file_path, 'r+') as file:
         state = json.load(file)
         scratch_file_path = state.get('scratch_file_path')
