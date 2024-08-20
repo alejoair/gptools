@@ -55,18 +55,18 @@ def main():
     elif args.operation == "save_file":
         save_file()
     elif args.operation == "insert_lines":
-        insert_lines(state_file_path="/tmp/gptools/text_editor/temp/editor_state.json", 
-                     start_line=args.starting_line_number, 
-                     new_lines=args.new_lines)
+        insert_lines(start_line=args.starting_line_number, 
+                     new_lines=args.new_lines,
+                     args=args)
     elif args.operation == "delete_lines":
-        delete_lines(state_file_path="/tmp/gptools/text_editor/temp/editor_state.json", 
-                     start_line=args.starting_line_number, 
-                     end_line=args.ending_line_number)
+        delete_lines(start_line=args.starting_line_number, 
+                     end_line=args.ending_line_number,
+                     args=args)
     elif args.operation == "replace_lines":
-        replace_lines(state_file_path="/tmp/gptools/text_editor/temp/editor_state.json",
-                  start_line=args.starting_line_number,
+        replace_lines(start_line=args.starting_line_number,
                   end_line=args.ending_line_number,
-                  new_lines=args.new_lines)
+                  new_lines=args.new_lines,
+                  args=args)
     else:
         print("Operación " + args.operation + " no reconocida.")
         print("Operaciones válidas: open_file, clear_editor, save_file, insert_lines, delete_lines, replace_lines")
