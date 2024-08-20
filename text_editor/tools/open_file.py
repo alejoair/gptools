@@ -85,17 +85,22 @@ def handle_response(response, state_file_path='/tmp/gptools/text_editor/temp/edi
         print(f'Respuesta inválida: {response}')
         return
 
-    
     with open(state_file_path, 'r+') as state_file:
         state = json.load(state_file)
         file_path = state.get("working_file_path")
         if response == 'yes':
-            open(file_path, 'w+').close() # Creamos el archivo antes de llamar a open_file, asi esta ejecutara la logica del archivo existente
+            # Crear la ruta completa si no existe
+            directory = os.path.dirname(file_path)
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+                print(f"Directorio {directory} creado.")
+
+            open(file_path, 'w+').close()  # Crear el archivo
             open_file(file_path, state_file_path)
             return
         else:
             print(f"No se ha creado el archivo {file_path}")
-        
+
         state.update({
             'awaiting_orders': False,
             'pending_function': None,
@@ -103,4 +108,3 @@ def handle_response(response, state_file_path='/tmp/gptools/text_editor/temp/edi
         })
 
         update_state(state_file_path, state)
-    
