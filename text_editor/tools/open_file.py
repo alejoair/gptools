@@ -19,7 +19,7 @@ def open_file(file_path, state_file_path='/tmp/gptools/text_editor/temp/editor_s
         print('No se proporcionó ninguna ruta de archivo.')
         return
 
-    if not os.path.exists(file_path):
+    if not os.path.exists(file_path):  #Si el archivo no existe
         print(f'El archivo {file_path} no existe. ¿Deseas crearlo? Para responder: "text_editor.py --response [yes, no]"')
         try:
             with open(state_file_path, 'r+') as state_file:
@@ -28,20 +28,20 @@ def open_file(file_path, state_file_path='/tmp/gptools/text_editor/temp/editor_s
                 except json.JSONDecodeError:
                     print("no se pudo decodificar el archivo de estado")
                     return
-
+                #Vamos a esperar la respuesta del usuario
                 state.update({
                     'awaiting_orders': True,
                     'pending_function': 'open_file',
                     'pending_function_options': RESPONSE_OPTIONS,
                     'working_file_path': file_path,
-                    'scratch_file_path': ''  # No se define hasta que el archivo se cree
                 })
 
                 update_state(state_file_path, state)
         except (IOError, json.JSONDecodeError) as e:
             print(f"Error al manejar el estado del editor: {str(e)}")
         return
-    else:
+    
+    else:  #Si el archivo si existe
         base_name, extension = os.path.splitext(file_path)
         scratch_file_path = f"{base_name}_scratch{extension}"
         undo_file_path = f"{base_name}_undo{extension}"
@@ -61,7 +61,10 @@ def open_file(file_path, state_file_path='/tmp/gptools/text_editor/temp/editor_s
                     print("Error al decodificar el archivo de estado")
 
                 state.update({
+                    'pending_function': '',
+                    'pending_function_options': [],
                     'awaiting_orders': False,
+                    'working_file_path': file_path,
                     'undo_file_path': undo_file_path,
                     'scratch_file_path': scratch_file_path
                 })
@@ -80,8 +83,9 @@ def handle_response(response, state_file_path='/tmp/gptools/text_editor/temp/edi
             state = json.load(state_file)
             file_path = state.get("working_file_path")
             if response == 'yes':
-                open(file_path, 'w+').close()
+                open(file_path, 'w+').close() # Creamos el archivo antes de llamar a open_file, asi esta ejecutara la logica del archivo existente
                 open_file(file_path, state_file_path)
+                return
             else:
                 print(f"No se ha creado el archivo {file_path}")
             
