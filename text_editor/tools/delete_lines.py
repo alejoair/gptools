@@ -17,8 +17,16 @@ def delete_lines(state_file_path="/tmp/gptools/text_editor/temp/editor_state.jso
             print("2. Una vez que el archivo esté abierto, podrás realizar la eliminación de líneas.")
             return
 
-        with open(scratch_file_path, "r") as file:
-            lines = file.readlines()
+         try:
+            with open(scratch_file_path, "r") as file:
+                lines = file.readlines()
+        except FileNotFoundError:
+            print("Error: No se encontró el archivo de scratch.")
+            print("Instrucciones:")
+            print("1. Asegúrate de haber abierto el archivo correctamente con la operación open_file.")
+            print("   Ejemplo: --operation open_file --file_path <ruta_del_archivo>")
+            print("2. Una vez que el archivo esté abierto, podrás realizar la inserción de líneas.")
+            return
 
         if start_line > len(lines):
             print("Error: El número de línea inicial es mayor que el número total de líneas en el archivo.")
