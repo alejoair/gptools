@@ -51,7 +51,7 @@ def open_file(file_path, state_file_path='/tmp/gptools/text_editor/temp/editor_s
         scratch_file_path = f"{base_name}_scratch{extension}"
         undo_file_path = f"{base_name}_undo{extension}"
 
-        number_lines(scratch_file_path) #Imprimimos el contenido del archivo numerado por lineas
+        number_lines(file_path) #Imprimimos el contenido del archivo numerado por lineas
         
         try:
             shutil.copy(file_path, scratch_file_path)
