@@ -10,15 +10,24 @@ def insert_lines(state_file_path="/tmp/gptools/text_editor/temp/editor_state.jso
         state = json.load(state_file)
         scratch_file_path = state.get("scratch_file_path")
         if not scratch_file_path:
-            print("Error: No se encontró el archivo de scratch.")
+            print("Error: No se encontró la ruta del archivo scratch.")
             print("Instrucciones:")
             print("1. Asegúrate de haber abierto el archivo correctamente con la operación open_file.")
             print("   Ejemplo: --operation open_file --file_path <ruta_del_archivo>")
             print("2. Una vez que el archivo esté abierto, podrás realizar la inserción de líneas.")
             return
 
-    with open(scratch_file_path, "r") as file:
-        lines = file.readlines()
+    try:
+        with open(scratch_file_path, "r") as file:
+            lines = file.readlines()
+    except FileNotFoundError:
+        print("Error: No se encontró el archivo de scratch.")
+        print("Instrucciones:")
+        print("1. Asegúrate de haber abierto el archivo correctamente con la operación open_file.")
+        print("   Ejemplo: --operation open_file --file_path <ruta_del_archivo>")
+        print("2. Una vez que el archivo esté abierto, podrás realizar la inserción de líneas.")
+        return
+
 
     if start_line > len(lines):
         start_line = len(lines) + 1
