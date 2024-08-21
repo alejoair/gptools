@@ -1,95 +1,80 @@
 Documentación del Text Editor
-Este documento proporciona instrucciones detalladas sobre cómo utilizar el text_editor.py para crear y modificar scripts de Python.
+Descripción General
+Este documento proporciona instrucciones detalladas sobre cómo utilizar text_editor.py para crear y modificar archivos de texto de manera segura y eficiente.
 
-Flujo de Trabajo OBLIGATORIO:
-Abrir un Archivo: Utiliza la operación open_file para abrir el archivo que deseas modificar o crear antes de aplicar cualquier modificacion.
-Realizar Modificaciones: Usa operaciones como insert_lines, delete_lines, y replace_lines para modificar el archivo.
-Revisar el Contenido: Es esencial revisar el contenido del archivo de scratch utilizando la vista previa que muestra el editor para asegurarse de que la sintaxis sea correcta.
-Guardar Cambios: Finalmente, utiliza save_file para guardar los cambios en el archivo original esto cerrara el archivo y si se quieren hacer nuevas modificaciones debe abrirse de nuevo con open_file.
-Ejemplo de Creación de un Script en Python
-A continuación, se muestra un ejemplo de cómo crear un script de Python utilizando text_editor.py.
+Flujo de Trabajo Obligatorio
+Abrir un Archivo:
 
-Ejemplo de Flujo Completo
-Abrir el archivo que se desea editar:
-
-Antes de realizar cualquier modificación, es importante abrir el archivo con la operación open_file.
-
+Antes de realizar cualquier modificación, es obligatorio abrir el archivo utilizando la operación open_file. Esto asegura que todas las modificaciones se realicen sobre un archivo de scratch, lo que permite revisiones y previene la corrupción accidental del archivo original.
 bash
-
+Copiar código
 python3 /tmp/gptools/text_editor/text_editor.py --operation open_file --file_path /path/to/file.py
-Insertar o modificar líneas:
+Realizar Modificaciones:
 
-Una vez abierto el archivo, puedes insertar nuevas líneas. Asegúrate de utilizar correctamente el parámetro --new_lines, especialmente cuando se requiere indentación.
-
-Ejemplo de cómo insertar múltiples líneas:
-
+Una vez abierto el archivo, utiliza las operaciones insert_lines, delete_lines y replace_lines para modificar el contenido. Es fundamental prestar atención a la indentación y a la correcta utilización de comillas, especialmente cuando se manejan strings o bloques de código anidados.
 bash
-
+Copiar código
 python3 /tmp/gptools/text_editor/text_editor.py --operation insert_lines --file_path /path/to/file.py --starting_line_number 1 --new_lines "def mi_funcion():" "    print(\"Hola, mundo\")"
+Revisar el Contenido:
 
-Revisar el contenido del archivo de scratch:
+Después de aplicar las modificaciones, revisa el contenido del archivo de scratch. Esta revisión es crucial para asegurar que las líneas se han insertado correctamente y que la sintaxis es válida. Esto ayuda a prevenir errores antes de guardar los cambios definitivos.
+bash
+Copiar código
+# La revisión se realiza automáticamente en el editor antes de guardar.
+Guardar Cambios:
 
-Después de aplicar las modificaciones, revisa el contenido de la vista previa que muestra el editor. Esta operación es crucial para verificar que el código se ha insertado correctamente.
-
-Guardar los cambios:
-
-Si estás satisfecho con la vista previa, guarda los cambios en el archivo original.
+Si estás satisfecho con las modificaciones, utiliza la operación save_file para guardar los cambios en el archivo original. Este paso cierra el archivo de scratch y finaliza el proceso de edición. Si se requieren más cambios, será necesario volver a abrir el archivo con open_file.
+bash
+Copiar código
+python3 /tmp/gptools/text_editor/text_editor.py --operation save_file --file_path /path/to/file.py
+Ejemplo Completo de Creación de un Script en Python
+Paso 1: Abrir el archivo
+Antes de hacer cualquier modificación, abre el archivo que deseas editar. Esto crea un archivo de scratch donde se aplicarán todas las modificaciones.
 
 bash
+Copiar código
+python3 /tmp/gptools/text_editor/text_editor.py --operation open_file --file_path /path/to/file.py
+Paso 2: Insertar o Modificar Líneas
+Una vez que el archivo esté abierto, puedes insertar o modificar líneas. Asegúrate de que las líneas estén correctamente indentadas y que los caracteres especiales, como comillas dentro de strings, estén correctamente escapados.
 
+Ejemplo de inserción de líneas:
+
+bash
+Copiar código
+python3 /tmp/gptools/text_editor/text_editor.py --operation insert_lines --file_path /path/to/file.py --starting_line_number 1 --new_lines "def mi_funcion():" "    print(\"Hola, mundo\")"
+Paso 3: Revisar el Contenido
+Revisa el contenido del archivo de scratch para asegurarte de que todo esté en orden. Este paso es fundamental para evitar errores de sintaxis y asegurar que las modificaciones son las deseadas.
+
+Paso 4: Guardar los Cambios
+Finalmente, guarda los cambios si estás satisfecho con las modificaciones. Esto escribirá el contenido del archivo de scratch en el archivo original.
+
+bash
+Copiar código
 python3 /tmp/gptools/text_editor/text_editor.py --operation save_file --file_path /path/to/file.py
-
 Uso Correcto del Parámetro --new_lines
-El parámetro --new_lines se utiliza en el script text_editor.py para insertar nuevas líneas de código en un archivo específico. Es fundamental seguir algunas reglas básicas para garantizar que el código se inserte correctamente, especialmente cuando se trata de indentación y caracteres especiales.
+El parámetro --new_lines es crítico para la correcta inserción de líneas en un archivo. Aquí te explicamos cómo utilizarlo adecuadamente para evitar errores comunes.
 
 Ejemplo Básico
-Supongamos que quieres agregar una función simple en un archivo de Python. La función que deseas insertar es:
-
-python
-
-def mi_funcion():
-    print("Hola, mundo")
-    
-Para insertar esta función en la primera línea de un archivo, utilizarías el siguiente comando:
+Inserta una función simple en la primera línea de un archivo:
 
 bash
-
-python3 /tmp/gptools/text_editor/text_editor.py --operation insert_lines --file_path /path/to/file.py --starting_line_number 1 --new_lines "def mi_funcion():" "    print(\"Hola, mundo\")"
-Desglose del Ejemplo
-Definición de la función: "def mi_funcion():" es la primera línea que define la función.
-Línea indentada: " print(\"Hola, mundo\")" es la segunda línea, que incluye cuatro espacios de indentación para seguir las reglas de sintaxis de Python.
-Ejemplo Avanzado: Inserción de Múltiples Líneas
-Si deseas agregar un bloque más complejo de código, como un condicional dentro de una función, puedes hacerlo de la siguiente manera:
-
-python
 Copiar código
-def saludo(persona):
-    if persona:
-        print(f"Hola, {persona}")
-    else:
-        print("Hola, mundo")
-El comando para insertar este código sería:
+python3 /tmp/gptools/text_editor/text_editor.py --operation insert_lines --file_path /path/to/file.py --starting_line_number 1 --new_lines "def mi_funcion():" "    print(\"Hola, mundo\")"
+Ejemplo Avanzado: Inserción de Múltiples Líneas
+Para insertar un bloque de código más complejo, como un condicional dentro de una función:
 
 bash
-
+Copiar código
 python3 /tmp/gptools/text_editor/text_editor.py --operation insert_lines --file_path /path/to/file.py --starting_line_number 10 --new_lines "def saludo(persona):" "    if persona:" "        print(f\"Hola, {persona}\")" "    else:" "        print(\"Hola, mundo\")"
-
 Consideraciones Importantes
-Indentación: Asegúrate de que todas las líneas que deben estar indentadas incluyan los espacios necesarios.
-Uso de comillas: Si necesitas incluir comillas dentro del código, debes escapar las comillas internas con el carácter \.
-Multilínea: Cada línea de código que quieras insertar debe estar entre comillas dobles y separada por un espacio en el comando.
-Puntuación y comas: No agregues comas innecesarias al final de las líneas de código a menos que formen parte del código.
-Errores Comunes
-Falta de indentación: Si no añades la indentación necesaria, el código resultante puede no ser válido.
-Escape incorrecto de caracteres: No escapar adecuadamente las comillas o caracteres especiales dentro de las líneas puede llevar a errores.
-Formato incorrecto de líneas: Omitir comillas dobles o no separar correctamente las líneas en el comando puede provocar fallos en la ejecución.
-Este documento detalla todo el proceso de edición con text_editor.py, desde abrir un archivo hasta guardar los cambios, asegurando que los usuarios sigan las mejores prácticas y eviten errores comunes.
-
-4. **Guardar los cambios en el archivo original:
-
-
-
-### Consideraciones Finales
-
-- **Verificar la Sintaxis:** Siempre revisa cuidadosamente las líneas antes de guardarlas para asegurarte de que no haya errores de sintaxis.
-- **Evitar Errores en la Inserción de Líneas:** Asegúrate de pasar correctamente las líneas al comando --new_lines, como se muestra en los ejemplos.
+Indentación: Cada línea que debe estar indentada necesita los espacios apropiados. Python es muy estricto con la indentación, por lo que cualquier error en este aspecto podría causar un fallo en la ejecución del script.
+Uso de Comillas: Escapa correctamente las comillas dentro de los strings utilizando \" para evitar errores de sintaxis.
+Separación de Líneas: Cada línea debe estar entre comillas dobles y separada por un espacio en el comando.
+Multilínea: Cada línea de código a insertar debe estar definida por separado y en el orden correcto.
+Errores Comunes a Evitar
+Falta de Indentación: Asegúrate de que todas las líneas que deben estar indentadas lo estén. La falta de indentación puede hacer que el código sea sintácticamente incorrecto.
+Escape Incorrecto de Caracteres: Asegúrate de escapar las comillas y otros caracteres especiales correctamente.
+Formato Incorrecto: No omitas comillas o espacios necesarios en el comando, ya que esto puede resultar en errores durante la ejecución.
+Consideraciones Finales
+Verificar la Sintaxis: Antes de guardar los cambios, revisa cuidadosamente las líneas para asegurarte de que no hay errores de sintaxis.
+Evitar Errores en la Inserción de Líneas: Sigue las prácticas recomendadas para pasar correctamente las líneas al comando --new_lines.
