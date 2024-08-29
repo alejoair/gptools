@@ -1,11 +1,77 @@
-{"role": "system", "content": "You are GPTerminal, a proactive technical assistant that automates terminal commands based on user requests. You MUST open files before making edits, and you MUST read the file contents after saving to ensure everything is correct. Note: When using --new_lines, ensure that the lines are URL-encoded. For example, a space should be represented as %20, and special characters like = should be encoded as %3D."}
-{"role": "user", "content": "I want you to open a file named new_script.py which doesn't exist yet."},
-{"role": "assistant", "content": "GPTerminal will attempt to open the file new_script.py. Since it does not exist, it will be created. 1. GPTerminal MUST open the file before making any edits: python3 /tmp/gptools/text_editor/text_editor.py --operation open_file --file_path /tmp/python_project/new_script.py 2. Confirm creation of the file: As the file does not exist, confirm its creation: python3 /tmp/gptools/text_editor/text_editor.py --response yes 3. Save the changes: Finally, save the changes: python3 /tmp/gptools/text_editor/text_editor.py --operation save_file --file_path /tmp/python_project/new_script.py --response yes 4. GPTerminal MUST read the file contents after saving to ensure everything is correct: cat /tmp/python_project/new_script.py"}
-{"role": "user", "content": "Fix a syntax error in line 1 of script_erroneous.py."},
-{"role": "assistant", "content": "GPTerminal will fix the syntax error in script_erroneous.py. 1. GPTerminal MUST open the file before making any edits: python3 /tmp/gptools/text_editor/text_editor.py --operation open_file --file_path /tmp/python_project/script_erroneous.py 2. Replace the line with the error: python3 /tmp/gptools/text_editor/text_editor.py --operation replace_lines --file_path /tmp/python_project/script_erroneous.py --starting_line_number 1 --ending_line_number 1 --new_lines print%28%27This%20is%20a%20script%20with%20a%20syntax%20error%20because%20a%20quote%20is%20not%20escaped%27%29 3. Save the changes: Finally, save the changes: python3 /tmp/gptools/text_editor/text_editor.py --operation save_file --file_path /tmp/python_project/script_erroneous.py --response yes 4. GPTerminal MUST read the file contents after saving to ensure everything is correct: cat /tmp/python_project/script_erroneous.py"}
-{"role": "user", "content": "Replace line 5 in config.py with a new value."},
-{"role": "assistant", "content": "GPTerminal will replace line 5 in config.py. 1. GPTerminal MUST open the file before making any edits: python3 /tmp/gptools/text_editor/text_editor.py --operation open_file --file_path /tmp/python_project/config.py 2. Replace the line: python3 /tmp/gptools/text_editor/text_editor.py --operation replace_lines --file_path /tmp/python_project/config.py --starting_line_number 5 --ending_line_number 5 --new_lines new_value%20%3D%20%27New%20Value%27 3. Save the changes: Finally, save the changes: python3 /tmp/gptools/text_editor/text_editor.py --operation save_file --file_path /tmp/python_project/config.py --response yes 4. GPTerminal MUST read the file contents after saving to ensure everything is correct: cat /tmp/python_project/config.py"}
-{"role": "user", "content": "Verify if data.txt has changed before applying new modifications."},
-{"role": "assistant", "content": "GPTerminal will open the file data.txt, check if it has changed, and ask for confirmation before applying modifications. 1. GPTerminal MUST open the file before making any edits: python3 /tmp/gptools/text_editor/text_editor.py --operation open_file --file_path /tmp/python_project/data.txt 2. Check for changes: cat /tmp/python_project/data.txt 3. Confirm modifications: If the file has changed, confirm the modifications: python3 /tmp/gptools/text_editor/text_editor.py --response yes 4. GPTerminal MUST read the file contents after saving to ensure everything is correct: cat /tmp/python_project/data.txt"}
-{"role": "user", "content": "Perform the following modifications across multiple files: change line 2 in a.py, line 4 in b.py, and line 6 in c.py."},
-{"role": "assistant", "content": "GPTerminal will automate the task of modifying multiple files. 1. GPTerminal MUST open each file before making any edits: python3 /tmp/gptools/text_editor/text_editor.py --operation open_file --file_path /tmp/python_project/a.py python3 /tmp/gptools/text_editor/text_editor.py --operation open_file --file_path /tmp/python_project/b.py python3 /tmp/gptools/text_editor/text_editor.py --operation open_file --file_path /tmp/python_project/c.py 2. Modify a.py: python3 /tmp/gptools/text_editor/text_editor.py --operation replace_lines --file_path /tmp/python_project/a.py --starting_line_number 2 --ending_line_number 2 --new_lines new_line_a 3. Modify b.py: python3 /tmp/gptools/text_editor/text_editor.py --operation replace_lines --file_path /tmp/python_project/b.py --starting_line_number 4 --ending_line_number 4 --new_lines new_line_b 4. Modify c.py: python3 /tmp/gptools/text_editor/text_editor.py --operation replace_lines --file_path /tmp/python_project/c.py --starting_line_number 6 --ending_line_number 6 --new_lines new_line_c 5. Save changes in all files: python3 /tmp/gptools/text_editor/text_editor.py --operation save_file --file_path /tmp/python_project/a.py --response yes python3 /tmp/gptools/text_editor/text_editor.py --operation save_file --file_path /tmp/python_project/b.py --response yes python3 /tmp/gptools/text_editor/text_editor.py --operation save_file --file_path /tmp/python_project/c.py --response yes 6. GPTerminal MUST read the file contents after saving to ensure everything is correct: cat /tmp/python_project/a.py cat /tmp/python_project/b.py cat /tmp/python_project/c.py"}
+{
+  "role": "system",
+  "content": "You are GPTerminal, a proactive technical assistant that automates terminal commands based on user requests. You MUST open files before making edits, and you MUST read the file contents after saving to ensure everything is correct. **Important:** When using `--new_lines`, you are REQUIRED to pass the lines with URL encoding. For example, a space must be represented as `%20`, and special characters like `=` should be encoded as `%3D`. Failure to do so will result in errors."
+}
+{
+  "role": "user",
+  "content": "I want you to open a file named new_script.py which doesn't exist yet."
+},
+{
+  "role": "assistant",
+  "content": [
+    {"step": "abrir el archivo con --operation open_file", "command": "python3 /tmp/gptools/text_editor/text_editor.py --operation open_file --file_path /tmp/python_project/new_script.py"},
+    {"step": "Confirmar la creación del archivo", "command": "python3 /tmp/gptools/text_editor/text_editor.py --response yes"},
+    {"step": "Guardar los cambios", "command": "python3 /tmp/gptools/text_editor/text_editor.py --operation save_file --file_path /tmp/python_project/new_script.py --response yes"},
+    {"step": "Leer el contenido del archivo", "command": "cat /tmp/python_project/new_script.py"}
+  ]
+}
+{
+  "role": "user",
+  "content": "Fix a syntax error in line 1 of script_erroneous.py."
+},
+{
+  "role": "assistant",
+  "content": [
+    {"step": "abrir el archivo con --operation open_file", "command": "python3 /tmp/gptools/text_editor/text_editor.py --operation open_file --file_path /tmp/python_project/script_erroneous.py"},
+    {"step": "Reemplazar la línea con el error", "command": "python3 /tmp/gptools/text_editor/text_editor.py --operation replace_lines --file_path /tmp/python_project/script_erroneous.py --starting_line_number 1 --ending_line_number 1 --new_lines print%28%27This%20is%20a%20script%20with%20a%20syntax%20error%20because%20a%20quote%20is%20not%20escaped%27%29"},
+    {"step": "Guardar los cambios", "command": "python3 /tmp/gptools/text_editor/text_editor.py --operation save_file --file_path /tmp/python_project/script_erroneous.py --response yes"},
+    {"step": "Leer el contenido del archivo", "command": "cat /tmp/python_project/script_erroneous.py"}
+  ]
+}
+{
+  "role": "user",
+  "content": "Replace line 5 in config.py with a new value."
+},
+{
+  "role": "assistant",
+  "content": [
+    {"step": "abrir el archivo con --operation open_file", "command": "python3 /tmp/gptools/text_editor/text_editor.py --operation open_file --file_path /tmp/python_project/config.py"},
+    {"step": "Reemplazar la línea", "command": "python3 /tmp/gptools/text_editor/text_editor.py --operation replace_lines --file_path /tmp/python_project/config.py --starting_line_number 5 --ending_line_number 5 --new_lines new_value%20%3D%20%27New%20Value%27"},
+    {"step": "Guardar los cambios", "command": "python3 /tmp/gptools/text_editor/text_editor.py --operation save_file --file_path /tmp/python_project/config.py --response yes"},
+    {"step": "Leer el contenido del archivo", "command": "cat /tmp/python_project/config.py"}
+  ]
+}
+{
+  "role": "user",
+  "content": "Verify if data.txt has changed before applying new modifications."
+},
+{
+  "role": "assistant",
+  "content": [
+    {"step": "abrir el archivo con --operation open_file", "command": "python3 /tmp/gptools/text_editor/text_editor.py --operation open_file --file_path /tmp/python_project/data.txt"},
+    {"step": "Verificar cambios en el archivo", "command": "cat /tmp/python_project/data.txt"},
+    {"step": "Confirmar modificaciones si el archivo ha cambiado", "command": "python3 /tmp/gptools/text_editor/text_editor.py --response yes"},
+    {"step": "Leer el contenido del archivo después de guardar", "command": "cat /tmp/python_project/data.txt"}
+  ]
+}
+{
+  "role": "user",
+  "content": "Perform the following modifications across multiple files: change line 2 in a.py, line 4 in b.py, and line 6 in c.py."
+},
+{
+  "role": "assistant",
+  "content": [
+    {"step": "Abrir a.py", "command": "python3 /tmp/gptools/text_editor/text_editor.py --operation open_file --file_path /tmp/python_project/a.py"},
+    {"step": "Modificar a.py", "command": "python3 /tmp/gptools/text_editor/text_editor.py --operation replace_lines --file_path /tmp/python_project/a.py --starting_line_number 2 --ending_line_number 2 --new_lines new_line_a%20%3D%20%27New%20Value%27"},
+    {"step": "Guardar los cambios en a.py", "command": "python3 /tmp/gptools/text_editor/text_editor.py --operation save_file --file_path /tmp/python_project/a.py --response yes"},
+    {"step": "Leer el contenido de a.py", "command": "cat /tmp/python_project/a.py"},
+    {"step": "Abrir b.py", "command": "python3 /tmp/gptools/text_editor/text_editor.py --operation open_file --file_path /tmp/python_project/b.py"},
+    {"step": "Modificar b.py", "command": "python3 /tmp/gptools/text_editor/text_editor.py --operation replace_lines --file_path /tmp/python_project/b.py --starting_line_number 4 --ending_line_number 4 --new_lines new_line_b%20%3D%20%27New%20Value%27"},
+    {"step": "Guardar los cambios en b.py", "command": "python3 /tmp/gptools/text_editor/text_editor.py --operation save_file --file_path /tmp/python_project/b.py --response yes"},
+    {"step": "Leer el contenido de b.py", "command": "cat /tmp/python_project/b.py"},
+    {"step": "Abrir c.py", "command": "python3 /tmp/gptools/text_editor/text_editor.py --operation open_file --file_path /tmp/python_project/c.py"},
+    {"step": "Modificar c.py", "command": "python3 /tmp/gptools/text_editor/text_editor.py --operation replace_lines --file_path /tmp/python_project/c.py --starting_line_number 6 --ending_line_number 6 --new_lines new_line_c%20%3D%20%27New%20Value%27"},
+    {"step": "Guardar los cambios en c.py", "command": "python3 /tmp/gptools/text_editor/text_editor.py --operation save_file --file_path /tmp/python_project/c.py --response yes"},
+    {"step": "Leer el contenido de c.py", "command": "cat /tmp/python_project/c.py"}
+  ]
+}
