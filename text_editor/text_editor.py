@@ -9,12 +9,25 @@ from tools.save_file import save_file
 from tools.insert_lines import insert_lines
 from tools.delete_lines import delete_lines
 
+def is_url_encoded(s):
+    # Comprobar si la cadena está codificada en URL
+    return urllib.parse.quote(urllib.parse.unquote(s)) == s
+
 def decode_url_lines(encoded_lines):
-    try:
-        return [urllib.parse.unquote(line) for line in encoded_lines]
-    except Exception as e:
-        print("Error al decodificar las líneas. Asegúrate de que las líneas estén codificadas en URL. Ejemplo: 'L%C3%ADnea%201' para 'Línea 1'.")
-        sys.exit(1)
+    for line in encoded_lines:
+        if not is_url_encoded(line):
+            print("Error: Las líneas nuevas deben estar codificadas en URL.")
+            print("Ejemplo real de uso correcto:")
+            print("python3 text_editor.py --operation insert_lines --file_path /ruta/al/archivo.py --starting_line_number 10 "
+                  "--new_lines \"def%20mi_funcion%28%29%3A%0A%20%20%20%20print%28%27Hola%2C%20mundo%21%27%29\"")
+            print("Donde:")
+            print(" - 'def%20mi_funcion%28%29%3A%0A%20%20%20%20print%28%27Hola%2C%20mundo%21%27%29' representa el código:")
+            print("   def mi_funcion():")
+            print("       print('Hola, mundo!')")
+            print("IMPORTANTE: Siempre debes abrir el archivo con `--operation open_file` antes de intentar modificarlo. "
+                  "No hacerlo puede corromper los datos y causar problemas graves. Una vez abierto el archivo se pueden aplicar modificaciones de forma secuencial, por ejemplo se puede insertar lineas, reemplazar lineas, etc sin tener que abrir el archivo en cada una, luego de terminar las ediciones se debe llamar a save_file, esto cerrara el archivo, lo que significa que se tendria que volver a abrir si se quiere editarlo nuevamente")
+            sys.exit(1)
+    return [urllib.parse.unquote(line) for line in encoded_lines]
 
 def handle_response(state, args):
     if not args.response:
@@ -42,14 +55,14 @@ def main():
     parser.add_argument("--response", help="Respuesta a una función pendiente", required=False)
     parser.add_argument("--starting_line_number", help="Número de línea inicial", type=int, required=False)
     parser.add_argument("--ending_line_number", help="Número de línea final", type=int, required=False)
-    parser.add_argument("--new_lines", help="Nuevas líneas a insertar (codificadas en URL)", nargs="*", required=False)
+    parser.add_argument("--new_lines", help="Nuevas líneas a insertar (codificadas en URL)", required=False)
 
     args = parser.parse_args()
 
-    # Decodificar líneas nuevas
+    # Decodificar líneas nuevas con validación de URL encoding
     if args.new_lines:
         try:
-            args.new_lines = decode_url_lines(args.new_lines)
+            args.new_lines = decode_url_lines([args.new_lines])
         except Exception as e:
             print(str(e))
             return
