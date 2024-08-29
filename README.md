@@ -15,7 +15,8 @@ When encoding in URL, characters that are unsafe or not allowed in the URL must 
 ```python
 def my_function():
     print('Hello')
-    return True```
+    return True
+```
 
 ## Important Guidelines
 
