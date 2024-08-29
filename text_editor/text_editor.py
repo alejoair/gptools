@@ -1,12 +1,20 @@
 import sys
 import json
 import argparse
+import urllib.parse
 from tools.open_file import open_file
 from tools.clear_editor import clear_editor
 from tools.replace_lines import replace_lines
 from tools.save_file import save_file
 from tools.insert_lines import insert_lines
 from tools.delete_lines import delete_lines
+
+def decode_url_lines(encoded_lines):
+    try:
+        return [urllib.parse.unquote(line) for line in encoded_lines]
+    except Exception as e:
+        print("Error al decodificar las líneas. Asegúrate de que las líneas estén codificadas en URL. Ejemplo: 'L%C3%ADnea%201' para 'Línea 1'.")
+        sys.exit(1)
 
 def handle_response(state, args):
     if not args.response:
@@ -21,7 +29,7 @@ def handle_response(state, args):
     try:
         pending_function_module = __import__("tools." + state["pending_function"], fromlist=["handle_response"])
         pending_function_module.handle_response(args.response)
-        print("Respuesta  + args.response +  procesada por la función " + state["pending_function"])
+        print("Respuesta " + args.response + " procesada por la función " + state["pending_function"])
     except ImportError as e:
         print("Error al importar el módulo para " + state["pending_function"] + ": " + str(e))
     except AttributeError as e:
@@ -34,9 +42,17 @@ def main():
     parser.add_argument("--response", help="Respuesta a una función pendiente", required=False)
     parser.add_argument("--starting_line_number", help="Número de línea inicial", type=int, required=False)
     parser.add_argument("--ending_line_number", help="Número de línea final", type=int, required=False)
-    parser.add_argument("--new_lines", help="Nuevas líneas a insertar", nargs="*", required=False)
+    parser.add_argument("--new_lines", help="Nuevas líneas a insertar (codificadas en URL)", nargs="*", required=False)
 
     args = parser.parse_args()
+
+    # Decodificar líneas nuevas
+    if args.new_lines:
+        try:
+            args.new_lines = decode_url_lines(args.new_lines)
+        except Exception as e:
+            print(str(e))
+            return
 
     # Leer el archivo de estado
     with open("/tmp/gptools/text_editor/temp/editor_state.json", "r") as state_file:
@@ -64,9 +80,9 @@ def main():
                      args=args)
     elif args.operation == "replace_lines":
         replace_lines(start_line=args.starting_line_number,
-                  end_line=args.ending_line_number,
-                  new_lines=args.new_lines,
-                  args=args)
+                      end_line=args.ending_line_number,
+                      new_lines=args.new_lines,
+                      args=args)
     else:
         print("Operación " + args.operation + " no reconocida.")
         print("Operaciones válidas: open_file, clear_editor, save_file, insert_lines, delete_lines, replace_lines")
