@@ -1,3 +1,4 @@
+#This documentation should be displayed entirely to the user, not a summary
 # GPTools text_editor.py README
 
 ## URL Encoding Explanation
