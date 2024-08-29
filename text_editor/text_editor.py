@@ -12,9 +12,22 @@ from tools.delete_lines import delete_lines
 def is_url_encoded(s):
     return urllib.parse.quote(urllib.parse.unquote(s)) == s
 
+def find_non_encoded_chars(original_string, encoded_string):
+    non_encoded_chars = []
+    for char in original_string:
+        encoded_char = urllib.parse.quote(char)
+        if encoded_char not in encoded_string:
+            non_encoded_chars.append(char)
+    return non_encoded_chars
+
 def decode_url_lines(encoded_string):
+    original_string = urllib.parse.unquote(encoded_string)
     if not is_url_encoded(encoded_string):
+        non_encoded_chars = find_non_encoded_chars(original_string, encoded_string)
         print("Error: The new lines must be URL-encoded.")
+        if non_encoded_chars:
+            print(f"The following characters were not encoded: {', '.join(non_encoded_chars)}")
+        print("Please ensure all special characters are properly URL-encoded.")
         print("Correct usage example:")
         print("python3 text_editor.py --operation insert_lines --file_path /path/to/file.py --starting_line_number 10 "
               "--new_lines \"def%20my_function%28%29%3A%0A%20%20%20%20print%28%27Hello%2C%20world%21%27%29\"")
@@ -22,13 +35,8 @@ def decode_url_lines(encoded_string):
         print(" - 'def%20my_function%28%29%3A%0A%20%20%20%20print%28%27Hello%2C%20world%21%27%29' represents the code:")
         print("   def my_function():")
         print("       print('Hello, world!')")
-        print("IMPORTANT: Always open the file with `--operation open_file` before attempting to modify it. "
-              "Failure to do so may corrupt data and cause serious issues. Once the file is opened, "
-              "you can apply modifications sequentially, such as inserting lines, replacing lines, etc., "
-              "without having to reopen the file each time. After finishing the edits, you must call save_file, "
-              "which will close the file. If you want to edit it again, you will need to open it again.")
         sys.exit(1)
-    return urllib.parse.unquote(encoded_string).splitlines()
+    return original_string.splitlines()
 
 def handle_response(state, args):
     if not args.response:
