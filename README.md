@@ -12,9 +12,10 @@ When encoding in URL, characters that are unsafe or not allowed in the URL must 
 - 
 # When you encode the new_lines that will be inserted on a file, you should encode ALWAYS encode ALL the special characters, text_editor.py will throw an error if you dont, also that will cause data corruption with dangerous consecuences for the user, GPTerminal should ALWAYS encode the new lines on a URL format as this:
 # python3 /tmp/gptools/text_editor/text_editor.py --operation insert_lines --file_path /tmp/python_project/config.py --line_number 5 --new_lines "def%20my_function()%3A%0A%20%20%20%20print(%27Hello%27)%0A%20%20%20%20return%20True" all the required characters are encoded and you can expect to this text be insterted on the file:
+```python
 def my_function():
     print('Hello')
-    return True
+    return True```
 
 ## Important Guidelines
 
